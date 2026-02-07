@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Org Platform - Interactive Mockup</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i data-lucide="hexagon" class="logo-icon"></i>
+          <span class="logo-text">Agent Org</span>
+        </div>
+      </div>
+      
+      <div class="global-search" id="global-search-trigger">
+        <i data-lucide="search"></i>
+        <span>Search anything...</span>
+        <kbd>⌘K</kbd>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="graph">
+          <i data-lucide="network"></i>
+          <span>Knowledge Graph</span>
+        </button>
+        <button class="nav-item" data-view="kanban">
+          <i data-lucide="columns"></i>
+          <span>Pipeline Board</span>
+        </button>
+        <button class="nav-item" data-view="queue">
+          <i data-lucide="user-check"></i>
+          <span>Need Human</span>
+          <span class="badge">3</span>
+        </button>
+        <button class="nav-item" data-view="docs">
+          <i data-lucide="file-text"></i>
+          <span>Documents</span>
+        </button>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="repo-selector" id="repo-selector">
+          <i data-lucide="git-fork"></i>
+          <span>team/knowledge-vault</span>
+          <i data-lucide="chevron-down" class="chevron"></i>
+        </div>
+        <button class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </button>
+      </div>
+    </aside>
+    
+    <main class="main-content">
+      <section id="view-graph" class="view active">
+        <header class="view-header">
+          <div class="header-left">
+            <i data-lucide="network" class="header-icon"></i>
+            <h1 class="header-title">Knowledge Graph</h1>
+            <span class="count-badge" id="node-count">127 nodes</span>
+          </div>
+          <div class="header-center">
+            <div class="search-box enhanced" id="graph-search">
+              <i data-lucide="sparkles" class="ai-icon"></i>
+              <input type="text" placeholder="Ask anything... e.g., 'Show docs about pipelines'" id="search-input">
+              <div class="search-loading" id="search-loading">
+                <i data-lucide="loader-2" class="spin"></i>
+              </div>
+            </div>
+          </div>
+          <div class="header-right">
+            <button class="btn btn-secondary" id="filter-toggle">
+              <i data-lucide="filter"></i>
+              Filters
+            </button>
+            <button class="btn btn-secondary" id="refresh-btn">
+              <i data-lucide="refresh-cw"></i>
+            </button>
+          </div>
+        </header>
+        
+        <div class="search-results-panel" id="search-results">
+          <div class="search-results-header">
+            <span class="results-count"><i data-lucide="sparkles"></i> AI Search Results</span>
+            <button class="close-results" id="close-results"><i data-lucide="x"></i></button>
+          </div>
+          <div class="search-results-body">
+            <div class="ai-answer">
+              <div class="ai-avatar"><i data-lucide="bot"></i></div>
+              <div class="ai-content">
+                <p>Found <strong>5 documents</strong> related to "pipelines". Here are the most relevant:</p>
+              </div>
+            </div>
+            <div class="results-list">
+              <article class="result-item" data-doc="pipeline-model">
+                <div class="result-icon" style="background: #8B5CF6"><i data-lucide="file-text"></i></div>
+                <div class="result-content">
+                  <h4>Pipeline Model</h4>
+                  <p class="result-path">vault/operations/pipeline-model</p>
+                  <p class="result-excerpt">Defines the 4-stage pipeline: Management → Research → Implementation → Quality...</p>
+                </div>
+                <span class="result-score">98%</span>
+              </article>
+              <article class="result-item" data-doc="handoff-rules">
+                <div class="result-icon" style="background: #3B82F6"><i data-lucide="file-text"></i></div>
+                <div class="result-content">
+                  <h4>Handoff Rules</h4>
+                  <p class="result-path">vault/operations/handoff-rules</p>
+                  <p class="result-excerpt">Rules for transitioning work between pipeline stages...</p>
+                </div>
+                <span class="result-score">92%</span>
+              </article>
+              <article class="result-item" data-doc="team-structure">
+                <div class="result-icon" style="background: #22C55E"><i data-lucide="file-text"></i></div>
+                <div class="result-content">
+                  <h4>Team Structure</h4>
+                  <p class="result-path">vault/organization/team-structure</p>
+                  <p class="result-excerpt">How teams are organized around pipeline stages...</p>
+                </div>
+                <span class="result-score">85%</span>
+              </article>
+            </div>
+          </div>
+        </div>
+        
+        <div class="filter-panel" id="filter-panel">
+          <div class="filter-group">
+            <label>Type</label>
+            <div class="filter-chips">
+              <button class="chip active" style="--chip-color: #8B5CF6" data-filter="type:moc">moc</button>
+              <button class="chip active" style="--chip-color: #3B82F6" data-filter="type:concept">concept</button>
+              <button class="chip active" style="--chip-color: #22C55E" data-filter="type:project">project</button>
+              <button class="chip active" style="--chip-color: #F59E0B" data-filter="type:resource">resource</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label>Status</label>
+            <div class="filter-chips">
+              <button class="chip" data-filter="status:draft">draft</button>
+              <button class="chip active" data-filter="status:review">review</button>
+              <button class="chip active" data-filter="status:published">published</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label>Domain</label>
+            <div class="filter-chips">
+              <button class="chip active" data-filter="domain:strategy">strategy</button>
+              <button class="chip active" data-filter="domain:operations">operations</button>
+              <button class="chip active" data-filter="domain:technology">technology</button>
+              <button class="chip" data-filter="domain:finance">finance</button>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-secondary" id="clear-filters">Clear All</button>
+        </div>
+        
+        <div class="graph-container">
+          <div class="graph-canvas" id="graph-canvas">
+            <svg viewBox="0 0 800 500" class="graph-svg" id="graph-svg">
+              <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="#CBD5E1"/>
+                </marker>
+              </defs>
+              <g class="edges" id="graph-edges"></g>
+              <g class="nodes" id="graph-nodes"></g>
+            </svg>
+            
+            <div class="zoom-controls">
+              <button title="Zoom In" id="zoom-in"><i data-lucide="zoom-in"></i></button>
+              <button title="Zoom Out" id="zoom-out"><i data-lucide="zoom-out"></i></button>
+              <button title="Fit to Screen" id="zoom-fit"><i data-lucide="maximize-2"></i></button>
+            </div>
+            
+            <div class="graph-tooltip" id="graph-tooltip"></div>
+          </div>
+          
+          <aside class="detail-sidebar" id="detail-sidebar">
+            <header class="sidebar-header">
+              <h2>Node Details</h2>
+              <button class="close-btn" id="close-detail"><i data-lucide="x"></i></button>
+            </header>
+            <div id="detail-content"></div>
+          </aside>
+        </div>
+        
+        <footer class="graph-legend">
+          <span class="legend-title">Node Types:</span>
+          <span class="legend-item"><span class="legend-dot" style="background: #8B5CF6"></span> moc</span>
+          <span class="legend-item"><span class="legend-dot" style="background: #3B82F6"></span> concept</span>
+          <span class="legend-item"><span class="legend-dot" style="background: #22C55E"></span> project</span>
+          <span class="legend-item"><span class="legend-dot" style="background: #F59E0B"></span> resource</span>
+          <span class="legend-separator">|</span>
+          <span class="legend-item"><span class="legend-line solid"></span> parent</span>
+          <span class="legend-item"><span class="legend-line dashed"></span> related</span>
+        </footer>
+      </section>
+      
+      <section id="view-kanban" class="view">
+        <header class="view-header">
+          <div class="header-left">
+            <i data-lucide="columns" class="header-icon"></i>
+            <h1 class="header-title">Pipeline Board</h1>
+            <span class="sync-status synced"><i data-lucide="check-circle"></i> Synced</span>
+          </div>
+          <div class="header-right">
+            <div class="search-box small">
+              <i data-lucide="search"></i>
+              <input type="text" placeholder="Filter cards..." id="kanban-filter">
+            </div>
+            <button class="btn btn-secondary" id="kanban-refresh">
+              <i data-lucide="refresh-cw"></i>
+              Sync
+            </button>
+            <a href="#" class="github-link">
+              <i data-lucide="external-link"></i>
+              Open in GitHub
+            </a>
+          </div>
+        </header>
+        
+        <div class="kanban-board" id="kanban-board"></div>
+        
+        <div class="kanban-stats">
+          <div class="stat"><span class="stat-value">8</span><span class="stat-label">Total Items</span></div>
+          <div class="stat"><span class="stat-value">3</span><span class="stat-label">In Progress</span></div>
+          <div class="stat warning"><span class="stat-value">3</span><span class="stat-label">Need Human</span></div>
+          <div class="stat"><span class="stat-value">2.3d</span><span class="stat-label">Avg. Lead Time</span></div>
+        </div>
+      </section>
+      
+      <section id="view-queue" class="view">
+        <header class="view-header">
+          <div class="header-left">
+            <i data-lucide="user-check" class="header-icon" style="color: #F59E0B"></i>
+            <h1 class="header-title">Need Human</h1>
+            <span class="count-badge warning" id="queue-count">3 pending</span>
+          </div>
+          <div class="header-right">
+            <select class="filter-select" id="queue-filter">
+              <option value="all">All Types</option>
+              <option value="approval">Approvals</option>
+              <option value="review">Reviews</option>
+              <option value="decision">Decisions</option>
+            </select>
+            <button class="btn btn-secondary">
+              <i data-lucide="refresh-cw"></i>
+            </button>
+          </div>
+        </header>
+        <div class="queue-list" id="queue-list"></div>
+      </section>
+      
+      <section id="view-docs" class="view">
+        <header class="view-header">
+          <div class="header-left">
+            <i data-lucide="file-text" class="header-icon"></i>
+            <h1 class="header-title">Documents</h1>
+          </div>
+          <div class="header-center">
+            <div class="search-box enhanced">
+              <i data-lucide="sparkles" class="ai-icon"></i>
+              <input type="text" placeholder="Search documents..." id="docs-search">
+            </div>
+          </div>
+        </header>
+        
+        <div class="docs-container">
+          <aside class="docs-sidebar">
+            <div class="docs-tree" id="docs-tree"></div>
+          </aside>
+          <main class="docs-viewer">
+            <div class="docs-header">
+              <div class="breadcrumb" id="doc-breadcrumb">
+                <span>vault</span><i data-lucide="chevron-right"></i>
+                <span>operations</span><i data-lucide="chevron-right"></i>
+                <span>pipeline-model</span>
+              </div>
+              <div class="docs-actions">
+                <button class="btn btn-sm btn-secondary"><i data-lucide="edit"></i> Edit in GitHub</button>
+                <button class="btn btn-sm btn-secondary"><i data-lucide="share-2"></i></button>
+              </div>
+            </div>
+            <article class="markdown-body" id="markdown-content"></article>
+          </main>
+          <aside class="docs-outline">
+            <h4>On this page</h4>
+            <nav id="doc-outline"></nav>
+            <div class="doc-meta">
+              <h4>Metadata</h4>
+              <dl id="doc-meta-list"></dl>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="search-modal">
+      <div class="modal-search">
+        <i data-lucide="sparkles" class="ai-icon"></i>
+        <input type="text" placeholder="Ask anything about your knowledge base..." id="modal-search-input" autofocus>
+        <kbd>ESC</kbd>
+      </div>
+      <div class="modal-suggestions">
+        <div class="suggestion-group">
+          <h5><i data-lucide="clock"></i> Recent</h5>
+          <button class="suggestion">Pipeline handoff rules</button>
+          <button class="suggestion">Team structure overview</button>
+        </div>
+        <div class="suggestion-group">
+          <h5><i data-lucide="sparkles"></i> Try asking</h5>
+          <button class="suggestion">"What documents mention approval workflows?"</button>
+          <button class="suggestion">"Show me all draft documents in strategy"</button>
+          <button class="suggestion">"How are teams organized?"</button>
+        </div>
+      </div>
+      <div class="modal-results" id="modal-results"></div>
+      <div class="modal-footer">
+        <span><kbd>↑↓</kbd> Navigate</span>
+        <span><kbd>Enter</kbd> Open</span>
+        <span><kbd>ESC</kbd> Close</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-overlay" id="doc-modal-overlay">
+    <div class="modal doc-modal" id="doc-modal">
+      <header class="doc-modal-header">
+        <div class="doc-modal-title">
+          <div class="doc-icon" style="background: #8B5CF6"><i data-lucide="file-text"></i></div>
+          <div>
+            <h2 id="doc-modal-name">Pipeline Model</h2>
+            <span class="doc-path" id="doc-modal-path">vault/operations/pipeline-model</span>
+          </div>
+        </div>
+        <div class="doc-modal-actions">
+          <button class="btn btn-secondary"><i data-lucide="external-link"></i> Open in GitHub</button>
+          <button class="close-btn" id="close-doc-modal"><i data-lucide="x"></i></button>
+        </div>
+      </header>
+      <div class="doc-modal-meta" id="doc-modal-meta"></div>
+      <article class="doc-modal-content markdown-body" id="doc-modal-content"></article>
+    </div>
+  </div>
+  
+  <div class="toast-container" id="toast-container"></div>
+  
+  <script src="app.js"></script>
+</body>
+</html>

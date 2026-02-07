@@ -1,0 +1,17 @@
+{
+  "name": "@agent-org/core",
+  "version": "0.1.0",
+  "description": "Core utilities and types for Agent Org Platform",
+  "main": "./out/index.js",
+  "types": "./out/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf out",
+    "dev": "tsc --watch",
+    "test": "echo 'No tests yet'"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

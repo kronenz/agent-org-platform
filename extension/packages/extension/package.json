@@ -1,0 +1,101 @@
+{
+  "name": "agent-org-extension",
+  "displayName": "Agent Org Platform",
+  "description": "VS Code Extension for Agent Org Platform - Knowledge Graph, Ops Dashboard, and GitHub Integration",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "agent-org.openGraphView",
+        "title": "Open Knowledge Graph",
+        "category": "Agent Org"
+      },
+      {
+        "command": "agent-org.openKanban",
+        "title": "Open Kanban Board",
+        "category": "Agent Org"
+      },
+      {
+        "command": "agent-org.openQueue",
+        "title": "Open Human Queue",
+        "category": "Agent Org"
+      },
+      {
+        "command": "agent-org.refreshData",
+        "title": "Refresh Data",
+        "category": "Agent Org"
+      }
+    ],
+    "views": {
+      "agent-org-sidebar": [
+        {
+          "id": "agent-org.graphView",
+          "name": "Knowledge Graph",
+          "type": "webview"
+        },
+        {
+          "id": "agent-org.kanbanView",
+          "name": "Kanban Board",
+          "type": "webview"
+        },
+        {
+          "id": "agent-org.documentsView",
+          "name": "Documents",
+          "type": "tree"
+        },
+        {
+          "id": "agent-org.queueView",
+          "name": "Human Queue",
+          "type": "tree"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "agent-org-sidebar",
+          "title": "Agent Org",
+          "icon": "$(organization)"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "agent-org.refreshData",
+          "when": "view == agent-org.graphView || view == agent-org.kanbanView",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --platform=node --target=node18 && npm run copy-webview",
+    "copy-webview": "rm -rf webview-dist && cp -r ../webview-ui/dist webview-dist",
+    "clean": "rm -rf out webview-dist",
+    "dev": "npm run build -- --watch",
+    "test": "echo 'No tests yet'"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "esbuild": "^0.19.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@agent-org/core": "workspace:*",
+    "@agent-org/github": "workspace:*"
+  }
+}

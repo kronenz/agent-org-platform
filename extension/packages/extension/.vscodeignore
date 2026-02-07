@@ -1,0 +1,8 @@
+src/**
+node_modules/**
+*.ts
+!out/**
+!webview-dist/**
+!README.md
+.eslintrc.json
+tsconfig.json
