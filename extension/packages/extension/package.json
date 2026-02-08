@@ -80,7 +80,7 @@
     }
   },
   "scripts": {
-    "build": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --platform=node --target=node18 && npm run copy-webview",
+    "build": "node build.mjs && npm run copy-webview",
     "copy-webview": "rm -rf webview-dist && cp -r ../webview-ui/dist webview-dist",
     "clean": "rm -rf out webview-dist",
     "dev": "npm run build -- --watch",

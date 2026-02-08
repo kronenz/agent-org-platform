@@ -1,87 +1,60 @@
 import * as vscode from 'vscode';
 import { DocumentTreeItem } from './TreeItems';
+import type { IndexService } from '../services/IndexService';
 
 interface DocumentNode {
   name: string;
   path: string;
   isDirectory: boolean;
-  children?: DocumentNode[];
+  children: Map<string, DocumentNode>;
 }
-
-const SAMPLE_ORG_DATA: DocumentNode = {
-  name: 'org',
-  path: 'org',
-  isDirectory: true,
-  children: [
-    {
-      name: '_meta',
-      path: 'org/_meta',
-      isDirectory: true,
-      children: [
-        { name: 'org-structure.md', path: 'org/_meta/org-structure.md', isDirectory: false },
-        { name: 'roles.md', path: 'org/_meta/roles.md', isDirectory: false },
-        { name: 'pipelines.md', path: 'org/_meta/pipelines.md', isDirectory: false }
-      ]
-    },
-    {
-      name: 'teams',
-      path: 'org/teams',
-      isDirectory: true,
-      children: [
-        { name: 'management', path: 'org/teams/management', isDirectory: true, children: [
-          { name: 'README.md', path: 'org/teams/management/README.md', isDirectory: false }
-        ]},
-        { name: 'research', path: 'org/teams/research', isDirectory: true, children: [
-          { name: 'README.md', path: 'org/teams/research/README.md', isDirectory: false }
-        ]},
-        { name: 'implementation', path: 'org/teams/implementation', isDirectory: true, children: [
-          { name: 'README.md', path: 'org/teams/implementation/README.md', isDirectory: false }
-        ]},
-        { name: 'quality', path: 'org/teams/quality', isDirectory: true, children: [
-          { name: 'README.md', path: 'org/teams/quality/README.md', isDirectory: false }
-        ]}
-      ]
-    },
-    {
-      name: 'projects',
-      path: 'org/projects',
-      isDirectory: true,
-      children: [
-        { name: 'agent-org-platform', path: 'org/projects/agent-org-platform', isDirectory: true, children: [
-          { name: 'README.md', path: 'org/projects/agent-org-platform/README.md', isDirectory: false }
-        ]}
-      ]
-    },
-    {
-      name: 'knowledge',
-      path: 'org/knowledge',
-      isDirectory: true,
-      children: [
-        { name: 'concepts', path: 'org/knowledge/concepts', isDirectory: true, children: [
-          { name: 'ai-agent.md', path: 'org/knowledge/concepts/ai-agent.md', isDirectory: false },
-          { name: 'knowledge-graph.md', path: 'org/knowledge/concepts/knowledge-graph.md', isDirectory: false }
-        ]}
-      ]
-    },
-    {
-      name: 'agents',
-      path: 'org/agents',
-      isDirectory: true,
-      children: [
-        { name: '_registry.md', path: 'org/agents/_registry.md', isDirectory: false }
-      ]
-    }
-  ]
-};
 
 export class DocumentsTreeProvider implements vscode.TreeDataProvider<DocumentTreeItem> {
   private _onDidChangeTreeData = new vscode.EventEmitter<DocumentTreeItem | undefined | null | void>();
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-  private rootNode: DocumentNode = SAMPLE_ORG_DATA;
+  private rootNode: DocumentNode | null = null;
+
+  constructor(private indexService: IndexService) {
+    this.buildTree();
+  }
 
   refresh(): void {
+    this.buildTree();
     this._onDidChangeTreeData.fire();
+  }
+
+  private async buildTree(): Promise<void> {
+    const artifacts = await this.indexService.getArtifacts();
+    
+    this.rootNode = {
+      name: 'root',
+      path: '',
+      isDirectory: true,
+      children: new Map(),
+    };
+
+    for (const artifact of artifacts) {
+      const parts = artifact.path.split('/');
+      let current = this.rootNode;
+
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        const isLast = i === parts.length - 1;
+        const currentPath = parts.slice(0, i + 1).join('/');
+
+        if (!current.children.has(part)) {
+          current.children.set(part, {
+            name: part,
+            path: currentPath,
+            isDirectory: !isLast,
+            children: new Map(),
+          });
+        }
+
+        current = current.children.get(part)!;
+      }
+    }
   }
 
   getTreeItem(element: DocumentTreeItem): vscode.TreeItem {
@@ -89,47 +62,60 @@ export class DocumentsTreeProvider implements vscode.TreeDataProvider<DocumentTr
   }
 
   getChildren(element?: DocumentTreeItem): Thenable<DocumentTreeItem[]> {
+    if (!this.rootNode) {
+      return Promise.resolve([]);
+    }
+
     if (!element) {
-      return Promise.resolve(this.buildTreeItems(this.rootNode.children || []));
+      return Promise.resolve(this.buildTreeItems(this.rootNode.children));
     }
 
     const node = this.findNode(element.filePath);
-    if (node && node.children) {
+    if (node) {
       return Promise.resolve(this.buildTreeItems(node.children));
     }
 
     return Promise.resolve([]);
   }
 
-  private buildTreeItems(nodes: DocumentNode[]): DocumentTreeItem[] {
-    return nodes.map(node => {
+  private buildTreeItems(children: Map<string, DocumentNode>): DocumentTreeItem[] {
+    const items: DocumentTreeItem[] = [];
+    
+    const sorted = Array.from(children.values()).sort((a, b) => {
+      if (a.isDirectory !== b.isDirectory) {
+        return a.isDirectory ? -1 : 1;
+      }
+      return a.name.localeCompare(b.name);
+    });
+
+    for (const node of sorted) {
       const collapsibleState = node.isDirectory
         ? vscode.TreeItemCollapsibleState.Collapsed
         : vscode.TreeItemCollapsibleState.None;
 
-      return new DocumentTreeItem(
+      items.push(new DocumentTreeItem(
         node.name,
         node.isDirectory,
         node.path,
         collapsibleState
-      );
-    });
+      ));
+    }
+
+    return items;
   }
 
-  private findNode(path: string, node: DocumentNode = this.rootNode): DocumentNode | undefined {
-    if (node.path === path) {
-      return node;
+  private findNode(path: string): DocumentNode | undefined {
+    if (!this.rootNode) return undefined;
+    
+    const parts = path.split('/');
+    let current = this.rootNode;
+
+    for (const part of parts) {
+      const child = current.children.get(part);
+      if (!child) return undefined;
+      current = child;
     }
 
-    if (node.children) {
-      for (const child of node.children) {
-        const found = this.findNode(path, child);
-        if (found) {
-          return found;
-        }
-      }
-    }
-
-    return undefined;
+    return current;
   }
 }

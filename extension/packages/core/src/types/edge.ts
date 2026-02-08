@@ -1,13 +1,18 @@
-/**
- * Types of relationships between artifacts
- */
-export type EdgeType = 'parent' | 'related' | 'wikilink';
+export type EdgeType = 
+  | 'parent' 
+  | 'related' 
+  | 'mentions' 
+  | 'moc_contains' 
+  | 'wikilink'
+  | 'contains'
+  | 'member_of'
+  | 'supervised_by'
+  | 'owns'
+  | 'pipeline_next'
+  | 'pipeline_prev';
 
-/**
- * Represents a directed edge in the knowledge graph
- */
 export interface Edge {
-  source: string;       // Artifact ID
-  target: string;       // Artifact ID
+  source: string;
+  target: string;
   type: EdgeType;
 }

@@ -8,6 +8,7 @@ import type { Artifact } from './artifact.js';
 export type WebviewMessage =
   | { type: 'ready' }
   | { type: 'nodeClick'; nodeId: string }
+  | { type: 'openDocument'; path: string }
   | { type: 'cardClick'; itemId: number }
   | { type: 'filterChange'; filters: Record<string, string[]> }
   | { type: 'search'; query: string };

@@ -1,13 +1,34 @@
-/**
- * Frontmatter metadata extracted from markdown documents
- */
+import type { PipelineStage } from './work-item.js';
+
+export type NodeType = 
+  | 'moc' 
+  | 'concept' 
+  | 'project' 
+  | 'resource'
+  | 'team'
+  | 'agent'
+  | 'index'
+  | 'registry';
+
+export type NodeStatus = 'draft' | 'review' | 'published' | 'active' | 'inactive';
+
 export interface Frontmatter {
   title?: string;
-  type?: 'moc' | 'concept' | 'project' | 'resource';
-  status?: 'draft' | 'review' | 'published';
+  type?: NodeType;
+  status?: NodeStatus;
   domain?: string;
   parent?: string;
   related?: string[];
+  
+  pipelineStage?: PipelineStage;
+  indexNumber?: string;
+  division?: string;
+  teamId?: string;
+  agentId?: string;
+  capabilities?: string[];
+  supervisedBy?: string;
+  members?: string[];
+  
   [key: string]: unknown;
 }
 

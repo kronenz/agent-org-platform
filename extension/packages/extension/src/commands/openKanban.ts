@@ -7,22 +7,8 @@ export async function openKanban(
   services: Services
 ) {
   try {
-    const { panel, broker } = createWebviewPanel(context, 'kanban', 'GitHub Kanban', services);
-    
-    panel.webview.onDidReceiveMessage(
-      async (message: any) => {
-        if (message.type === 'webview-ready') {
-          const workItems = await services.githubService.getWorkItems();
-          broker.send(panel, {
-            type: 'work-items',
-            data: workItems
-          });
-        }
-      }
-    );
-    
-    vscode.window.showInformationMessage('GitHub Kanban opened');
+    createWebviewPanel(context, 'kanban', 'Pipeline Kanban', services);
   } catch (error) {
-    vscode.window.showErrorMessage(`Failed to open GitHub Kanban: ${error}`);
+    vscode.window.showErrorMessage(`Failed to open Pipeline Kanban: ${error}`);
   }
 }

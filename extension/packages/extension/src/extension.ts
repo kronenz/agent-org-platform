@@ -1,13 +1,22 @@
 import * as vscode from 'vscode';
 import { createServices } from './services';
 import { createWebviewPanel } from './views/WebviewPanelFactory';
+import { DocumentsTreeProvider } from './providers/DocumentsTreeProvider';
+import { QueueTreeProvider } from './providers/QueueTreeProvider';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   console.log('Agent Org Platform extension activated');
 
   const services = createServices(context);
 
-  // Command IDs must match package.json "contributes.commands"
+  await services.indexService.index();
+
+  const documentsProvider = new DocumentsTreeProvider(services.indexService);
+  const queueProvider = new QueueTreeProvider(services.indexService);
+
+  vscode.window.registerTreeDataProvider('agent-org.documentsView', documentsProvider);
+  vscode.window.registerTreeDataProvider('agent-org.queueView', queueProvider);
+
   const openGraph = vscode.commands.registerCommand('agentOrg.openGraph', () => {
     console.log('[Agent Org] Opening Knowledge Graph...');
     createWebviewPanel(context, 'graph', 'Knowledge Graph', services);
@@ -18,12 +27,10 @@ export function activate(context: vscode.ExtensionContext) {
     createWebviewPanel(context, 'kanban', 'Pipeline Kanban', services);
   });
 
-  const search = vscode.commands.registerCommand('agentOrg.search', () => {
-    vscode.window.showQuickPick(['Search coming soon...'], { placeHolder: 'Search documents' });
-  });
-
   const reindex = vscode.commands.registerCommand('agentOrg.reindex', async () => {
     await services.indexService.index();
+    documentsProvider.refresh();
+    queueProvider.refresh();
     vscode.window.showInformationMessage('Vault reindexed');
   });
 
@@ -31,7 +38,14 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage('GitHub sync coming soon');
   });
 
-  context.subscriptions.push(openGraph, openKanban, search, reindex, syncGitHub);
+  const refreshData = vscode.commands.registerCommand('agent-org.refreshData', async () => {
+    await services.indexService.index();
+    documentsProvider.refresh();
+    queueProvider.refresh();
+    vscode.window.showInformationMessage('Data refreshed');
+  });
+
+  context.subscriptions.push(openGraph, openKanban, reindex, syncGitHub, refreshData);
 }
 
 export function deactivate() {

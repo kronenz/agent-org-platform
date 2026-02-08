@@ -26,9 +26,10 @@ function hasNeedHumanLabel(labels: { name: string }[]): boolean {
 
 function detectPriority(labels: { name: string }[]): Priority {
   const labelNames = labels.map((l) => l.name.toLowerCase());
-  if (labelNames.some((l) => l.includes('p0') || l.includes('critical'))) return 'p0';
-  if (labelNames.some((l) => l.includes('p1') || l.includes('high'))) return 'p1';
-  return 'p2';
+  if (labelNames.some((l) => l.includes('p0') || l.includes('critical'))) return 'P0';
+  if (labelNames.some((l) => l.includes('p1') || l.includes('high'))) return 'P1';
+  if (labelNames.some((l) => l.includes('p3') || l.includes('low'))) return 'P3';
+  return 'P2';
 }
 
 function detectQueueItemType(labels: { name: string }[]): QueueItemType {
