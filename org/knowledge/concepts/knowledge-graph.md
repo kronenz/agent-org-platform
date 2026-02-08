@@ -32,7 +32,7 @@ Knowledge Graph는 Markdown 문서와 그들 간의 관계(wikilink, parent, rel
 | parent | frontmatter | 상위 문서 |
 | related | frontmatter | 관련 문서 |
 | wikilink | body | [[링크]] |
-
+d
 ## Features
 
 - **필터링**: Type, Status, Domain별 필터

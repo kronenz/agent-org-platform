@@ -1,22 +1,36 @@
 ---
 title: "Management Team"
-type: moc
+type: team
 status: published
-domain: management
-updated: 2026-02-07
+updated: 2026-02-08
+index: "1.1"
+pipeline_stage: management
 ---
 
-# Management Team
+# 1.1 Management Team (경영팀)
 
 조직의 우선순위, 승인, 로드맵을 관리하는 팀.
+
+## Team Overview
+
+| Attribute | Value |
+|-----------|-------|
+| **Index** | 1.1 |
+| **Division** | Management Division |
+| **Pipeline Stage** | Management |
+| **Owner Role** | Operator |
 
 ## Pipeline Stage
 
 **Management** → Research → Implementation → Quality
 
-## Owner Role
+## Team Members
 
-[[roles#operator|Operator]]
+### 1.1.1 Human Members
+
+| ID | Role | Focus Area | Status |
+|----|------|------------|--------|
+| H-MGT-001 | Operator | Strategy, Approval, Roadmap | Active |
 
 ## Responsibilities
 
@@ -25,22 +39,23 @@ updated: 2026-02-07
 - Human Gate 승인
 - 처리량(throughput) 모니터링
 
-## Entry Conditions
+## Entry/Exit Conditions
 
-- 새로운 이니셔티브 제안
-- 다른 스테이지에서의 에스컬레이션
-- 정기 플래닝 세션
+```yaml
+entry_condition: new_initiative OR escalation
+exit_condition: approved_and_assigned
+```
 
-## Exit Conditions
+## Handoff Rules
 
-- 이니셔티브 승인 및 담당자 할당
-- Research 스테이지로 핸드오프
-
-## Active Items
-
-이 폴더에 현재 Management 스테이지에 있는 작업 문서를 저장.
+| From | To | Condition |
+|------|----|-----------|
+| External | Management | New initiative |
+| Any Team | Management | Escalation (need:human) |
+| Management | Research | Approved and assigned |
 
 ## Related
 
-- [[org-structure]]
+- [[INDEX#1-management-division]]
+- [[roles#operator]]
 - [[pipelines#management]]

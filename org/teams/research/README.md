@@ -1,22 +1,43 @@
 ---
 title: "Research Team"
-type: moc
+type: team
 status: published
-domain: research
-updated: 2026-02-07
+updated: 2026-02-08
+index: "2.1"
+pipeline_stage: research
 ---
 
-# Research Team
+# 2.1 Research Team (리서치팀)
 
 조사, 설계, 분석을 담당하는 팀.
+
+## Team Overview
+
+| Attribute | Value |
+|-----------|-------|
+| **Index** | 2.1 |
+| **Division** | Execution Division |
+| **Pipeline Stage** | Research |
+| **Owner Role** | Researcher |
 
 ## Pipeline Stage
 
 Management → **Research** → Implementation → Quality
 
-## Owner Role
+## Team Members
 
-[[roles#researcher|Researcher]]
+### 2.1.1 Human Researchers
+
+| ID | Role | Focus Area | Status |
+|----|------|------------|--------|
+| H-RES-001 | Lead Researcher | Architecture, System Design | Active |
+
+### 2.1.2 AI Research Agents
+
+| ID | Agent Type | Capability | Status |
+|----|------------|------------|--------|
+| A-RES-001 | Analysis Agent | 요구사항 분석, 경쟁사 조사 | Active |
+| A-RES-002 | Design Agent | 설계 문서 초안, 다이어그램 | Active |
 
 ## Responsibilities
 
@@ -25,28 +46,23 @@ Management → **Research** → Implementation → Quality
 - 설계 문서 작성
 - 프로토타입 개발
 
-## Entry Conditions
+## Entry/Exit Conditions
 
-- Management에서 승인된 이니셔티브
-- 할당된 담당자
-
-## Exit Conditions
-
-- 설계 문서 승인
-- Implementation으로 핸드오프 준비 완료
+```yaml
+entry_condition: assigned_from_management
+exit_condition: design_approved
+```
 
 ## Deliverables
 
-- 리서치 노트
-- 기술 스펙
-- 설계 문서
-- 프로토타입 (필요 시)
-
-## Active Items
-
-이 폴더에 현재 Research 스테이지에 있는 작업 문서를 저장.
+| Output | Format | Quality Gate |
+|--------|--------|--------------|
+| Requirements Spec | Markdown | Reviewed |
+| Architecture Doc | Markdown + Diagrams | Approved |
+| Technical Spec | Markdown | Implementation Ready |
 
 ## Related
 
-- [[org-structure]]
+- [[INDEX#21-research-team]]
+- [[roles#researcher]]
 - [[pipelines#research]]

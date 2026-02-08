@@ -1,22 +1,44 @@
 ---
 title: "Implementation Team"
-type: moc
+type: team
 status: published
-domain: implementation
-updated: 2026-02-07
+updated: 2026-02-08
+index: "2.2"
+pipeline_stage: implementation
 ---
 
-# Implementation Team
+# 2.2 Implementation Team (구현팀)
 
 코드 구현 및 개발을 담당하는 팀.
+
+## Team Overview
+
+| Attribute | Value |
+|-----------|-------|
+| **Index** | 2.2 |
+| **Division** | Execution Division |
+| **Pipeline Stage** | Implementation |
+| **Owner Role** | Builder |
 
 ## Pipeline Stage
 
 Management → Research → **Implementation** → Quality
 
-## Owner Role
+## Team Members
 
-[[roles#builder|Builder]]
+### 2.2.1 Human Builders
+
+| ID | Role | Focus Area | Status |
+|----|------|------------|--------|
+| H-BLD-001 | Lead Developer | Core Architecture, Integration | Active |
+
+### 2.2.2 AI Builder Agents
+
+| ID | Agent Type | Capability | Status |
+|----|------------|------------|--------|
+| A-BLD-001 | Code Agent | 코드 생성, 리팩토링, 버그 수정 | Active |
+| A-BLD-002 | Docs Agent | 문서 작성, README 업데이트 | Active |
+| A-BLD-003 | Test Agent | 테스트 케이스 생성 | Active |
 
 ## Responsibilities
 
@@ -25,29 +47,30 @@ Management → Research → **Implementation** → Quality
 - 테스트 작성
 - PR 생성
 
-## Entry Conditions
+## Entry/Exit Conditions
 
-- 승인된 설계 문서
-- Research에서 핸드오프
-
-## Exit Conditions
-
-- PR 생성 완료
-- 테스트 통과
-- Quality 리뷰 준비 완료
+```yaml
+entry_condition: design_approved
+exit_condition: pr_ready_for_review
+```
 
 ## Deliverables
 
-- 소스 코드
-- 기술 문서
-- 테스트 케이스
-- PR
+| Output | Format | Quality Gate |
+|--------|--------|--------------|
+| Source Code | TypeScript/React | Lint + Type Check |
+| Tests | Jest/Vitest | Coverage >= 80% |
+| Documentation | Markdown | Accurate |
+| Pull Request | GitHub PR | Ready for Review |
 
-## Active Items
+## Code Standards
 
-이 폴더에 현재 Implementation 스테이지에 있는 작업 문서를 저장.
+- TypeScript strict mode
+- No `any`, no `@ts-ignore`
+- Conventional Commits
 
 ## Related
 
-- [[org-structure]]
+- [[INDEX#22-implementation-team]]
+- [[roles#builder]]
 - [[pipelines#implementation]]
